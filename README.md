@@ -1,52 +1,60 @@
-# Notes API
+# Implementace B
 
-Jednoduché HTTP API pro správu poznámek. Data se uchovávají pouze v paměti procesu, takže po restartu aplikace zmizí.
+Jednoduchá aplikace pro správu poznámek vytvořená v rámci experimentu zaměřeného na porovnání různých přístupů k vývoji softwaru.
 
-## Požadavky
+## Funkce
 
-- Python 3.10 nebo novější
+Aplikace poskytuje HTTP API pro:
 
-## Instalace
+- kontrolu dostupnosti aplikace,
+- zobrazení všech poznámek a konkrétní poznámky,
+- vytváření nových poznámek,
+- úpravu a odstraňování existujících poznámek.
+
+Vstupní data se validují a API vrací odpovídající HTTP stavové kódy při úspěšných operacích i chybových situacích. Chybové odpovědi mají jednotný formát JSON.
+
+## Technologie
+
+- Python 3.10+
+- FastAPI
+- Pydantic
+- pytest
+
+## Spuštění
+
+Vytvořte a aktivujte virtuální prostředí:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e ".[test]"
 ```
 
 Ve Windows aktivujte prostředí příkazem `.venv\Scripts\activate`.
 
-## Spuštění
+Nainstalujte závislosti aplikace:
+
+```bash
+python -m pip install -e ".[test]"
+```
+
+Spusťte aplikaci z kořenové složky projektu:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-API poběží na `http://127.0.0.1:8000`. Interaktivní dokumentace je na `/docs`.
+API poběží na `http://127.0.0.1:8000`. Interaktivní dokumentace je dostupná na `http://127.0.0.1:8000/docs`.
 
-## Endpointy
+## Testování
 
-| Metoda | Cesta | Popis |
-| --- | --- | --- |
-| `GET` | `/health` | Stav aplikace |
-| `GET` | `/notes` | Seznam poznámek |
-| `GET` | `/notes/{id}` | Jedna poznámka |
-| `POST` | `/notes` | Vytvoření poznámky |
-| `PUT` | `/notes/{id}` | Nahrazení textu poznámky |
-| `DELETE` | `/notes/{id}` | Odstranění poznámky |
-
-Tělo požadavku `POST` a `PUT` je JSON, například:
-
-```json
-{"text": "Dokončit úkol"}
-```
-
-Text musí obsahovat alespoň jeden znak, který není bílým znakem. Úspěšné vytvoření vrací `201`, úspěšné čtení a úprava `200` a úspěšné odstranění `200` s potvrzením v JSON. Chyby používají JSON ve tvaru `{"error": {"code": "...", "message": "..."}}`; neplatný vstup vrací `422` a chybějící endpoint nebo poznámka `404` s odlišným kódem chyby.
-
-## Testy
+Automatizované jednotkové a integrační testy spustíte příkazem:
 
 ```bash
-python -m pytest
+python -m pytest -v
 ```
 
-Testy obsahují jednotkové ověření úložiště a integrační ověření HTTP API přes FastAPI `TestClient`.
+## Poznámky
+
+Data poznámek se uchovávají pouze v paměti aplikace. Po jejím restartování se uložené poznámky odstraní.
+
+Projekt slouží k experimentálnímu porovnání implementací a není určen jako produkční systém.
